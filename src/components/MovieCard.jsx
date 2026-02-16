@@ -1,32 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useContext } from "react";
+import { MovieContext } from "../contexts/MovieContext";
 
 const MovieCard = ({ movie }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
 
-  // TMDb poster URL (use placeholder if missing)
+  const { watchlist, addToWatchlist, removeFromWatchlist, favorites, addToFavorites, removeFromFavorites } = useContext(MovieContext);
+
+  // Check if movie already in watchlist
+  const isFavorite = favorites.some((m) => m.id === movie.id);
+  const isInWatchlist = watchlist.some((m) => m.id === movie.id);
+
+
+  // Poster URL
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-    : 'https://placehold.co/300x450/667eea/ffffff?text=No+Poster';
+    : "https://placehold.co/300x450/667eea/ffffff?text=No+Poster";
 
-  // Check if movie is already in favorites when card loads
-  useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem('favoriteMovies')) || [];
-    const movieIsFavorite = favorites.some(fav => fav.id === movie.id);
-    setIsFavorite(movieIsFavorite);
-  }, [movie.id]);
-
-  // Add / remove favorite
+  // Toggle favorite
   const toggleFavorite = () => {
-    const favorites = JSON.parse(localStorage.getItem('favoriteMovies')) || [];
-
     if (isFavorite) {
-      const updatedFavorites = favorites.filter(fav => fav.id !== movie.id);
-      localStorage.setItem('favoriteMovies', JSON.stringify(updatedFavorites));
-      setIsFavorite(false);
+      removeFromFavorites(movie.id);
     } else {
-      favorites.push(movie);
-      localStorage.setItem('favoriteMovies', JSON.stringify(favorites));
-      setIsFavorite(true);
+      addToFavorites(movie);
+    }
+  };
+
+  // Toggle watchlist
+   const handleWatchlistClick = () => {
+    if (isInWatchlist) {
+      removeFromWatchlist(movie.id);
+    } else {
+      addToWatchlist(movie);
     }
   };
 
@@ -45,13 +48,23 @@ const MovieCard = ({ movie }) => {
             {movie.release_date?.substring(0, 4)}
           </span>
         </div>
+        <div className="button-group">
+          {/* Favorite Button */}
+          <button
+            className={`favorite-button ${isFavorite ? "favorited" : ""}`}
+            onClick={toggleFavorite}
+          >
+            {isFavorite ? "♥ Remove from Favorites" : "♡ Add to Favorites"}
+          </button>
 
-        <button
-          className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
-          onClick={toggleFavorite}
-        >
-          {isFavorite ? '♥ Remove from Favorites' : '♡ Add to Favorites'}
-        </button>
+          {/* Watchlist Button */}
+          <button
+            className={`watchlist-button ${isInWatchlist ? "in-watchlist" : ""}`}
+            onClick={handleWatchlistClick}
+          >
+            {isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -2,25 +2,25 @@ import { useContext } from "react";
 import { MovieContext } from "../contexts/MovieContext";
 import MovieGrid from "../components/MovieGrid";
 
-function Favorites() {
-  const { favorites } = useContext(MovieContext);
+function Watchlist() {
+  const { watchlist, removeFromWatchlist } = useContext(MovieContext);
 
   return (
     <main className="main-content">
       <div className="content-header">
-        <h2>My Favorites</h2>
-        <p>Your saved movies collection</p>
+        <h2>My Watchlist</h2>
+        <p>Movies you plan to watch</p>
       </div>
 
-      {favorites.length > 0 ? (
-        <MovieGrid movies={favorites} />
+      {watchlist.length > 0 ? (
+        <MovieGrid movies={watchlist} />
       ) : (
         <div className="empty-state">
-          <p>No favorite movies yet. Start adding some from the home page!</p>
+          <p>Your watchlist is empty.</p>
         </div>
       )}
     </main>
   );
 }
 
-export default Favorites;
+export default Watchlist;

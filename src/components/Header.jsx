@@ -26,6 +26,7 @@ function Header({ onSearch }) { // receive onSearch from App.jsx
         <nav className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/favorites" className="nav-link">Favorites</Link>
+          <Link to="/watchlist" className="nav-link">Watchlist</Link>
         </nav>
 
         <div className="search-container">
